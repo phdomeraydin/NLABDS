@@ -1,0 +1,5 @@
+Configuration,Dimension n,Field bit length,Nilpotency class c,Repetitions
+P1,16,61,2,30
+P2,32,61,2,30
+P3,64,61,2,30
+P4,128,61,2,30

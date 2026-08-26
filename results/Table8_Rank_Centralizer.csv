@@ -1,0 +1,5 @@
+n,Mean rank,Mean normalized rank rho_g,Mean dim C_L(g),Mean normalized centralizer delta_g
+16,4,0.25,12,0.75
+32,8,0.25,24,0.75
+64,16,0.25,48,0.75
+128,32,0.25,96,0.75
