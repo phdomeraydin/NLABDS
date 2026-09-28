@@ -1,0 +1,4 @@
+Study,n,Field bits,Center fraction,Target density,Realized density,Independent Lie algebras,Cryptographic trials,Attack mean (ms),Trial-level attack SD (ms),Between-algebra SD of attack means (ms),Attack 95% CI low (ms),Attack 95% CI high (ms),Mean rank,Mean nullity,Normalized rank,Normalized nullity,Attack success (%),Forgery rate (%)
+field_bits,64,61,0.25,0.35,0.3546099290780142,10,100,7.138969,0.5491597446926615,0.15540274046275146,7.02781314991883,7.25012485008117,16,48,0.25,0.75,100.0,100.0
+field_bits,64,127,0.25,0.35,0.3550531914893617,10,100,8.503104,0.6811669704264879,0.2144829333899449,8.349689506035032,8.656518493964969,16,48,0.25,0.75,100.0,100.0
+field_bits,64,255,0.25,0.35,0.3446808510638298,10,100,12.004278,0.24115399270586377,0.2463909942798685,11.828040435977838,12.18051556402216,16,48,0.25,0.75,100.0,100.0

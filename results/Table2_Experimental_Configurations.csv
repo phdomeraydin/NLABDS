@@ -1,5 +1,5 @@
-Configuration,Dimension n,Field bit length,Nilpotency class c,Repetitions
-P1,16,61,2,30
-P2,32,61,2,30
-P3,64,61,2,30
-P4,128,61,2,30
+Configuration,Dimension n,Field bit length,Nilpotency class c,Center fraction,Target bracket density,Mean realized density,Independent Lie algebras,Trials per algebra,Total cryptographic trials
+P1,16,61,2,0.25,0.35,0.32575757575757575,10,10,100
+P2,32,61,2,0.25,0.35,0.3717391304347826,10,10,100
+P3,64,61,2,0.25,0.35,0.3497340425531915,10,10,100
+P4,128,61,2,0.25,0.35,0.3511184210526316,10,10,100

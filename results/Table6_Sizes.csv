@@ -1,0 +1,5 @@
+n,Private key (bytes),"Public-key payload g,y (bytes)",Signature (bytes),Dense algebra parameters (bytes),Mean sparse algebra parameter size (bytes),"Total public material, dense (bytes)"
+16,128,256,256,2112,731.0,2368
+32,256,512,512,17664,6771.6,18176
+64,512,1024,1024,144384,51285.0,145408
+128,1024,2048,2048,1167360,413083.8,1169408
