@@ -1,104 +1,225 @@
-from dataclasses import dataclass, field
+from dataclasses import (
+    dataclass,
+    field,
+)
 from pathlib import Path
 
 
 @dataclass
 class ExperimentConfig:
     """
-    Configuration class for the Lie algebra digital signature experiments.
+    Experimental configuration.
+
+    Every parameter configuration
+    is evaluated using multiple
+    independently generated
+    Lie-algebra instances.
+
+    Several cryptographic trials
+    are then performed for each
+    fixed algebra instance.
     """
 
-    # ============================================================
-    # Output directory
-    # ============================================================
+    output_dir: Path | str = (
+        Path("results")
+    )
 
-    output_dir: Path | str = Path("results")
+    # ========================================================
+    # Main dimension experiment
+    # ========================================================
 
-    # ============================================================
-    # Experimental parameters
-    # ============================================================
-
-    # Lie algebra dimensions
-    dimensions: tuple[int, ...] = (
+    dimensions: tuple[
+        int,
+        ...
+    ] = (
         16,
         32,
         64,
-        128
+        128,
     )
 
-    # Finite-field bit length
     field_bits: int = 61
 
-    # Number of repetitions for each dimension
-    repetitions: int = 30
+    center_fraction: float = (
+        0.25
+    )
 
-    # Number of forgery tests
-    forgery_tests: int = 30
-
-    # ============================================================
-    # Reproducibility
-    # ============================================================
-
-    # Master random seed
-    master_seed: int = 20260824
-
-    # ============================================================
-    # Class-2 Lie algebra generation parameters
-    # ============================================================
-
-    # Approximate fraction of the algebra used as the center
-    center_fraction: float = 0.25
-
-    # Density of randomly generated structure constants
     density: float = 0.35
 
-    # ============================================================
-    # Prime moduli
-    # ============================================================
+    # ========================================================
+    # Independent experimental instances
+    # ========================================================
 
-    primes: dict[int, int] = field(
+    algebra_instances_per_configuration: int = (
+        10
+    )
+
+    trials_per_algebra: int = (
+        10
+    )
+
+    # ========================================================
+    # Reproducibility
+    # ========================================================
+
+    master_seed: int = (
+        20260824
+    )
+
+    # ========================================================
+    # Optional ablation studies
+    # ========================================================
+
+    run_ablations: bool = False
+
+    ablation_dimension: int = 64
+
+    ablation_field_bits: tuple[
+        int,
+        ...
+    ] = (
+        61,
+        127,
+        255,
+    )
+
+    ablation_center_fractions: tuple[
+        float,
+        ...
+    ] = (
+        0.125,
+        0.25,
+        0.375,
+        0.50,
+    )
+
+    ablation_densities: tuple[
+        float,
+        ...
+    ] = (
+        0.15,
+        0.35,
+        0.55,
+        0.75,
+    )
+
+    # ========================================================
+    # Prime moduli
+    # ========================================================
+
+    primes: dict[
+        int,
+        int
+    ] = field(
         default_factory=lambda: {
-            61: (1 << 61) - 1,
-            127: (1 << 127) - 1,
-            255: (1 << 255) - 19,
+            61: (
+                (1 << 61)
+                - 1
+            ),
+            127: (
+                (1 << 127)
+                - 1
+            ),
+            255: (
+                (1 << 255)
+                - 19
+            ),
         }
     )
 
-    # ============================================================
-    # Prime property
-    # ============================================================
-
-    @property
-    def prime(self) -> int:
-        """
-        Return the prime modulus corresponding to field_bits.
-        """
-
-        if self.field_bits not in self.primes:
+    def __post_init__(self):
+        if not self.dimensions:
             raise ValueError(
-                f"No prime modulus is defined for "
-                f"field_bits={self.field_bits}"
+                "dimensions must "
+                "not be empty."
             )
 
-        return self.primes[self.field_bits]
+        if (
+            self.algebra_instances_per_configuration
+            <= 0
+        ):
+            raise ValueError(
+                "algebra_instances_per_"
+                "configuration must "
+                "be positive."
+            )
 
-    # ============================================================
-    # Output directory preparation
-    # ============================================================
+        if (
+            self.trials_per_algebra
+            <= 0
+        ):
+            raise ValueError(
+                "trials_per_algebra "
+                "must be positive."
+            )
 
-    def prepare_output_dir(self) -> Path:
-        """
-        Create the output directory if it does not exist.
+        if not (
+            0
+            < self.center_fraction
+            < 1
+        ):
+            raise ValueError(
+                "center_fraction "
+                "must lie strictly "
+                "between 0 and 1."
+            )
 
-        output_dir may be supplied either as a string
-        or as a pathlib.Path object.
-        """
+        if not (
+            0
+            <= self.density
+            <= 1
+        ):
+            raise ValueError(
+                "density must lie "
+                "in [0, 1]."
+            )
 
-        self.output_dir = Path(self.output_dir)
+        self.prime_for_bits(
+            self.field_bits
+        )
+
+    @property
+    def prime(self):
+        return self.prime_for_bits(
+            self.field_bits
+        )
+
+    @property
+    def repetitions(self):
+        return (
+            self.algebra_instances_per_configuration
+            * self.trials_per_algebra
+        )
+
+    def prime_for_bits(
+        self,
+        field_bits,
+    ):
+        if (
+            field_bits
+            not in self.primes
+        ):
+            raise ValueError(
+                "No prime modulus "
+                "is defined for "
+                f"field_bits="
+                f"{field_bits}."
+            )
+
+        return self.primes[
+            field_bits
+        ]
+
+    def prepare_output_dir(
+        self
+    ):
+        self.output_dir = Path(
+            self.output_dir
+        )
 
         self.output_dir.mkdir(
             parents=True,
-            exist_ok=True
+            exist_ok=True,
         )
 
         return self.output_dir
